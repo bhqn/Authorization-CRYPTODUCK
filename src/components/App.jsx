@@ -9,6 +9,7 @@ import ProtectedRoute from "./protectedRoute";
 import * as auth from "../utils/auth";
 import { setToken, getToken } from "../utils/token";
 import * as api from "../utils/api"
+import AppContext from '../contexts/AppContext'
 
 function App() {
   const [userData, setUserData] = useState({ username: "", email: "" });
@@ -88,39 +89,43 @@ function App() {
 // TODO - manipular JWT
   }, []);
 
-  return (
+return (
+  <AppContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
     <Routes>
       <Route
         path="/ducks"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            {" "}
-            <Ducks />{" "}
+          <ProtectedRoute>
+            <Ducks setIsLoggedIn={setIsLoggedIn} />
           </ProtectedRoute>
         }
       />
       <Route
         path="/my-profile"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <MyProfile userData={userData} />{" "}
+          <ProtectedRoute>
+            <MyProfile userData={userData} />
           </ProtectedRoute>
         }
       />
       <Route
         path="/login"
         element={
-          <div className="loginContainer">
-            <Login handleLogin={handleLogin} />
-          </div>
+          <ProtectedRoute anonymous={true}>
+            <div className="loginContainer">
+              <Login handleLogin={handleLogin} />
+            </div>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/register"
         element={
-          <div className="registerContainer">
-            <Register handleRegistration={handleRegistration} />
-          </div>
+          <ProtectedRoute anonymous={true}>
+            <div className="registerContainer">
+              <Register handleRegistration={handleRegistration} />
+            </div>
+          </ProtectedRoute>
         }
       />
       <Route
@@ -130,11 +135,12 @@ function App() {
             <Navigate to="/ducks" replace />
           ) : (
             <Navigate to="/login" replace />
-          ) //ternario de redirecionamento
+          )
         }
       />
     </Routes>
-  );
+  </AppContext.Provider>
+);
 }
 
 export default App;
