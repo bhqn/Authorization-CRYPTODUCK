@@ -49,7 +49,7 @@ function App() {
       .authorize(username, password)
       .then((data) => {
         if (data.jwt) {
-          setToken(data.jwt);
+          setToken(data.token);
           setUserData(data.user);
           setIsLoggedIn(true);
             // Depois do login, em vez de sempre acessar /ducks, 
